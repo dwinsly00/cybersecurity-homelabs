@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    image: mariadb:10.6
+    container_name: dvwa-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=dvwapass
+    volumes:
+      - dvwa-db-data:/var/lib/mysql
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    container_name: dvwa-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=dvwapass
+      - MYSQL_DATABASE=dvwa
+    depends_on:
+      - db
+volumes:
+  dvwa-db-data:

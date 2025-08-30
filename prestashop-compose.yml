@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:5.7
+    container_name: ps-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=prestashop
+      - MYSQL_USER=ps
+      - MYSQL_PASSWORD=pspass
+    volumes:
+      - ps-db-data:/var/lib/mysql
+  prestashop:
+    image: prestashop/prestashop:latest
+    container_name: prestashop
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      - PS_INSTALL_AUTO=1
+      - DB_SERVER=db
+      - DB_NAME=prestashop
+      - DB_USER=ps
+      - DB_PASSWORD=pspass
+      - PS_DEV_MODE=1
+    volumes:
+      - ps-data:/var/www/html
+volumes:
+  ps-db-data:
+  ps-data:
